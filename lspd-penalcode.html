@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LSPD Penal System</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: #0f172a;
+    color: white;
+}
+
+.navbar {
+    background: #020617;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #1e3a8a;
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.table-box, .summary {
+    background: #020617;
+    border: 1px solid #1e3a8a;
+    border-radius: 15px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.table-box {
+    width: 60%;
+}
+
+.summary {
+    width: 40%;
+}
+
+h2, h3, h4, p {
+    margin-top: 0;
+}
+
+.search {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #1e293b;
+    color: white;
+    box-sizing: border-box;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+th {
+    background: linear-gradient(90deg, #1e3a8a, #2563eb);
+    padding: 12px;
+    text-align: left;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #1e293b;
+    vertical-align: top;
+}
+
+tr:hover {
+    background: rgba(37, 99, 235, 0.2);
+}
+
+.badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 6px;
+}
+
+.traffic { background: #2563eb; }
+.permit  { background: #059669; }
+.crime   { background: #dc2626; }
+
+.btn {
+    background: #2563eb;
+    border: none;
+    padding: 6px 10px;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.remove {
+    background: #dc2626;
+}
+
+.total {
+    margin-top: 15px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.total-box {
+    background: #1e293b;
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid #1e3a8a;
+}
+
+.total-box h4 {
+    margin: 0 0 6px 0;
+    font-size: 13px;
+    color: #cbd5e1;
+}
+
+.total-box p {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+textarea {
+    width: 100%;
+    height: 400px;
+    margin-top: 15px;
+    background: #1e293b;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    resize: none;
+    box-sizing: border-box;
+    font-family: Consolas, monospace;
+    line-height: 1.5;
+}
+
+.section-header th {
+    background: #172554;
+}
+
+@media (max-width: 1000px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .table-box, .summary {
+        width: 100%;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+    <h2>LSPD Penal System</h2>
+    <div>Users Online: 2</div>
+</div>
+
+<div class="container">
+
+    <div class="table-box">
+        <h3>Penal Database</h3>
+
+        <input type="text" class="search" placeholder="Search charges..." onkeyup="searchTable()" id="searchInput">
+
+        <table id="chargeTable">
+            <tr>
+                <th>Charges</th>
+                <th>Fine</th>
+                <th>Jail</th>
+                <th>Action</th>
+            </tr>
+
+            <tr class="section-header">
+                <th colspan="4">SECTION CODE 01 — Transportation & Road Services Law</th>
+            </tr>
+            <tr><td>(1) A. General Traffic Violations</td><td>$1000</td><td>0</td><td><button class="btn" onclick="addCharge('1A','General Traffic Violations',1000,'$1000',0)">Add</button></td></tr>
+            <tr><td>(1) B. Failed or Refuse to Pay Any Fine Ticket Given</td><td>$100</td><td>15</td><td><button class="btn" onclick="addCharge('1B','Failed or Refuse to Pay Any Fine Ticket Given',100,'$100',15)">Add</button></td></tr>
+            <tr><td>(1) C. Driving any motorized vehicle without an official driving license</td><td>$250</td><td>15</td><td><button class="btn" onclick="addCharge('1C','Driving any motorized vehicle without an official driving license',250,'$250',15)">Add</button></td></tr>
+            <tr><td>(1) D. Maneuver any sea vehicles without official sailing licenses</td><td>$150</td><td>20</td><td><button class="btn" onclick="addCharge('1D','Maneuver any sea vehicles without official sailing licenses',150,'$150',20)">Add</button></td></tr>
+            <tr><td>(1) E. Flying any air vehicles without official flying licenses as a pilot</td><td>$2250</td><td>35</td><td><button class="btn" onclick="addCharge('1E','Flying any air vehicles without official flying licenses as a pilot',2250,'$2250',35)">Add</button></td></tr>
+            <tr><td>(1) F. Maneuvering any kind of vehicles with suspended / expired license</td><td>$250</td><td>10</td><td><button class="btn" onclick="addCharge('1F','Maneuvering any kind of vehicles with suspended / expired license',250,'$250',10)">Add</button></td></tr>
+            <tr><td>(1) G. Reckless Driving</td><td>$2000</td><td>0</td><td><button class="btn" onclick="addCharge('1G','Reckless Driving',2000,'$2000',0)">Add</button></td></tr>
+            <tr><td>(1) H. Speeding</td><td>$1000</td><td>0</td><td><button class="btn" onclick="addCharge('1H','Speeding',1000,'$1000',0)">Add</button></td></tr>
+            <tr><td>(1) I. Improper Vehicle Parking Method</td><td>Impound</td><td>0</td><td><button class="btn" onclick="addCharge('1I','Improper Vehicle Parking Method',0,'Impound',0)">Add</button></td></tr>
+            <tr><td>(1) J. Illegal Modifications On Vehicles</td><td>Impound</td><td>0</td><td><button class="btn" onclick="addCharge('1J','Illegal Modifications On Vehicles',0,'Impound',0)">Add</button></td></tr>
+            <tr><td>(1) K. Unregistered Vehicles</td><td>Impound</td><td>0</td><td><button class="btn" onclick="addCharge('1K','Unregistered Vehicles',0,'Impound',0)">Add</button></td></tr>
+            <tr><td>(1) L. Vehicular Endangerment</td><td>$1500</td><td>30</td><td><button class="btn" onclick="addCharge('1L','Vehicular Endangerment',1500,'$1500',30)">Add</button></td></tr>
+            <tr><td>(1) M. Vehicular Manslaughter</td><td>$1500</td><td>40</td><td><button class="btn" onclick="addCharge('1M','Vehicular Manslaughter',1500,'$1500',40)">Add</button></td></tr>
+            <tr><td>(1) N. DWI or DUI</td><td>$1000</td><td>15</td><td><button class="btn" onclick="addCharge('1N','DWI or DUI',1000,'$1000',15)">Add</button></td></tr>
+            <tr><td>(1) O. Illegal Street Racing</td><td>$2500</td><td>25</td><td><button class="btn" onclick="addCharge('1O','Illegal Street Racing',2500,'$2500',25)">Add</button></td></tr>
+            <tr><td>(1) P. Evading From Police</td><td>$1000</td><td>20</td><td><button class="btn" onclick="addCharge('1P','Evading From Police',1000,'$1000',20)">Add</button></td></tr>
+            <tr><td>(1) Q. Flight Regulations</td><td>$250</td><td>0</td><td><button class="btn" onclick="addCharge('1Q','Flight Regulations',250,'$250',0)">Add</button></td></tr>
+            <tr><td>(1) R. Misbehavely Maneuvering / Operating an Aircraft / Aircraft Endangerment</td><td>$450</td><td>30</td><td><button class="btn" onclick="addCharge('1R','Misbehavely Maneuvering / Operating an Aircraft / Aircraft Endangerment',450,'$450',30)">Add</button></td></tr>
+            <tr><td>(1) S. Emergency Landing</td><td>$400</td><td>0</td><td><button class="btn" onclick="addCharge('1S','Emergency Landing',400,'$400',0)">Add</button></td></tr>
+            <tr><td>(1) T. Failure to Yield to Emergency Vehicles</td><td>$500</td><td>0</td><td><button class="btn" onclick="addCharge('1T','Failure to Yield to Emergency Vehicles',500,'$500',0)">Add</button></td></tr>
+            <tr><td>(1) U. Failure to Yield to A Roadblock</td><td>$500</td><td>0</td><td><button class="btn" onclick="addCharge('1U','Failure to Yield to A Roadblock',500,'$500',0)">Add</button></td></tr>
+            <tr><td>(1) V. Following An Emergency Vehicle</td><td>$1000</td><td>0</td><td><button class="btn" onclick="addCharge('1V','Following An Emergency Vehicle',1000,'$1000',0)">Add</button></td></tr>
+            <tr><td>(1) W. Altering or Changing a Vehicle Identification Number</td><td>$1000</td><td>20</td><td><button class="btn" onclick="addCharge('1W','Altering or Changing a Vehicle Identification Number',1000,'$1000',20)">Add</button></td></tr>
+
+            <tr class="section-header">
+                <th colspan="4">SECTION CODE 02 — License & Permit Law</th>
+            </tr>
+            <tr><td>(2) A. Firearms Permit</td><td>$10000</td><td>25</td><td><button class="btn" onclick="addCharge('2A','Firearms Permit',10000,'$10000',25)">Add</button></td></tr>
+            <tr><td>(2) B. Organizing a Small Illegal Event</td><td>$10000</td><td>25</td><td><button class="btn" onclick="addCharge('2B','Organizing a Small Illegal Event',10000,'$10000',25)">Add</button></td></tr>
+            <tr><td>(2) C. Organizing a Big Illegal Event</td><td>$20000</td><td>35</td><td><button class="btn" onclick="addCharge('2C','Organizing a Big Illegal Event',20000,'$20000',35)">Add</button></td></tr>
+
+            <tr class="section-header">
+                <th colspan="4">SECTION CODE 03 — Control of Drugs</th>
+            </tr>
+            <tr><td>(3) A. Possessing of Heroine (4 Grams or Less)</td><td>$800</td><td>10</td><td><button class="btn" onclick="addCharge('3A','Possessing of Heroine (4 Grams or Less)',800,'$800',10)">Add</button></td></tr>
+            <tr><td>(3) B. Possessing of Heroine (5 Grams or more)</td><td>$1600</td><td>10</td><td><button class="btn" onclick="addCharge('3B','Possessing of Heroine (5 Grams or more)',1600,'$1600',10)">Add</button></td></tr>
+            <tr><td>(3) C. Possessing of Cocaine (4 Grams or less)</td><td>$1200</td><td>15</td><td><button class="btn" onclick="addCharge('3C','Possessing of Cocaine (4 Grams or less)',1200,'$1200',15)">Add</button></td></tr>
+            <tr><td>(3) D. Possessing of Cocaine (5 Grams or more)</td><td>$2400</td><td>10</td><td><button class="btn" onclick="addCharge('3D','Possessing of Cocaine (5 Grams or more)',2400,'$2400',10)">Add</button></td></tr>
+            <tr><td>(3) E. Possessing of Crack</td><td>$500 + $500 / 50 grams</td><td>20</td><td><button class="btn" onclick="addCharge('3E','Possessing of Crack',0,'$500 + $500 / 50 grams',20)">Add</button></td></tr>
+            <tr><td>(3) F. Possessing of Weed</td><td>$200 + $200 / 50 grams</td><td>20</td><td><button class="btn" onclick="addCharge('3F','Possessing of Weed',0,'$200 + $200 / 50 grams',20)">Add</button></td></tr>
+            <tr><td>(3) G. Possessing of Meth</td><td>$400 + $400 / 50 grams</td><td>20</td><td><button class="btn" onclick="addCharge('3G','Possessing of Meth',0,'$400 + $400 / 50 grams',20)">Add</button></td></tr>
+            <tr><td>(3) H. Possessing of Raw Illegal Plants</td><td>$500 / piece</td><td>20</td><td><button class="btn" onclick="addCharge('3H','Possessing of Raw Illegal Plants',0,'$500 / piece',20)">Add</button></td></tr>
+            <tr><td>(3) I. IUI or IWI</td><td>$1000</td><td>15</td><td><button class="btn" onclick="addCharge('3I','IUI or IWI',1000,'$1000',15)">Add</button></td></tr>
+            <tr><td>(3) J. Selling or distributing of illegal drugs</td><td>$3000</td><td>25</td><td><button class="btn" onclick="addCharge('3J','Selling or distributing of illegal drugs',3000,'$3000',25)">Add</button></td></tr>
+            <tr><td>(3) K. Drug Manufacturing</td><td>$5000</td><td>35</td><td><button class="btn" onclick="addCharge('3K','Drug Manufacturing',5000,'$5000',35)">Add</button></td></tr>
+            <tr><td>(3) L. Being Present for Illegal Drug Use</td><td>$800</td><td>10</td><td><button class="btn" onclick="addCharge('3L','Being Present for Illegal Drug Use',800,'$800',10)">Add</button></td></tr>
+
+            <tr class="section-header">
+                <th colspan="4">SECTION CODE 04 — Control of Deadly Weapons</th>
+            </tr>
+            <tr><td>(4) A. Possessing, Showing, And Display Any Usages of Sharp / Blunt Weapons</td><td>$250</td><td>15</td><td><button class="btn" onclick="addCharge('4A','Possessing, Showing, And Display Any Usages of Sharp / Blunt Weapons',250,'$250',15)">Add</button></td></tr>
+            <tr><td>(4) B. Possessing of Illegal Firearms</td><td>$5000</td><td>40</td><td><button class="btn" onclick="addCharge('4B','Possessing of Illegal Firearms',5000,'$5000',40)">Add</button></td></tr>
+            <tr><td>(4) C. Possessing of Legal Firearms Without Official Firearms License</td><td>$10000</td><td>20</td><td><button class="btn" onclick="addCharge('4C','Possessing of Legal Firearms Without Official Firearms License',10000,'$10000',20)">Add</button></td></tr>
+            <tr><td>(4) D. Possessing Any Kind of Weapon Materials or Schematics</td><td>$2500</td><td>25</td><td><button class="btn" onclick="addCharge('4D','Possessing Any Kind of Weapon Materials or Schematics',2500,'$2500',25)">Add</button></td></tr>
+            <tr><td>(4) E. Misusing Firearms License / Abusing Firearms License</td><td>License Revoked / Firearms License Agreement</td><td>0</td><td><button class="btn" onclick="addCharge('4E','Misusing Firearms License / Abusing Firearms License',0,'License Revoked / Firearms License Agreement',0)">Add</button></td></tr>
+            <tr><td>(4) E2. Firearms & Licensing Division Weapon Target</td><td>$1000</td><td>20</td><td><button class="btn" onclick="addCharge('4E2','Firearms & Licensing Division Weapon Target',1000,'$1000',20)">Add</button></td></tr>
+            <tr><td>(4) F. Brandishing a Firearm or Weapon</td><td>$1000</td><td>20</td><td><button class="btn" onclick="addCharge('4F','Brandishing a Firearm or Weapon',1000,'$1000',20)">Add</button></td></tr>
+            <tr><td>(4) G. Unlawful Discharge of a Firearm or Weapon</td><td>$2500</td><td>25</td><td><button class="btn" onclick="addCharge('4G','Unlawful Discharge of a Firearm or Weapon',2500,'$2500',25)">Add</button></td></tr>
+            <tr><td>(4) H. Possession of a Body Armor</td><td>$2000</td><td>10</td><td><button class="btn" onclick="addCharge('4H','Possession of a Body Armor',2000,'$2000',10)">Add</button></td></tr>
+            <tr><td>(4) I. Weapon Trafficking</td><td>$10000</td><td>30</td><td><button class="btn" onclick="addCharge('4I','Weapon Trafficking',10000,'$10000',30)">Add</button></td></tr>
+            <tr><td>(4) J. Possessing Destructive Devices or Explosives</td><td>$20000</td><td>35</td><td><button class="btn" onclick="addCharge('4J','Possessing Destructive Devices or Explosives',20000,'$20000',35)">Add</button></td></tr>
+
+            <tr class="section-header">
+                <th colspan="4">SECTION CODE 05 — Crime Against the Person</th>
+            </tr>
+            <tr><td>(5) A. Intimidation</td><td>$250</td><td>10</td><td><button class="btn" onclick="addCharge('5A','Intimidation',250,'$250',10)">Add</button></td></tr>
+            <tr><td>(5) B. Assault</td><td>$500</td><td>15</td><td><button class="btn" onclick="addCharge('5B','Assault',500,'$500',15)">Add</button></td></tr>
+            <tr><td>(5) C. Assault with Deadly Weapons</td><td>$500</td><td>20</td><td><button class="btn" onclick="addCharge('5C','Assault with Deadly Weapons',500,'$500',20)">Add</button></td></tr>
+            <tr><td>(5) D. Battery</td><td>$500</td><td>25</td><td><button class="btn" onclick="addCharge('5D','Battery',500,'$500',25)">Add</button></td></tr>
+            <tr><td>(5) E. Aggravated Battery</td><td>$500</td><td>30</td><td><button class="btn" onclick="addCharge('5E','Aggravated Battery',500,'$500',30)">Add</button></td></tr>
+            <tr><td>(5) F. Attempted Murdering</td><td>$1500</td><td>30</td><td><button class="btn" onclick="addCharge('5F','Attempted Murdering',1500,'$1500',30)">Add</button></td></tr>
+            <tr><td>(5) G. Murdering</td><td>$2000</td><td>50</td><td><button class="btn" onclick="addCharge('5G','Murdering',2000,'$2000',50)">Add</button></td></tr>
+            <tr><td>(5) H. Committed a group criminal assault with or without weapons</td><td>$2500</td><td>30</td><td><button class="btn" onclick="addCharge('5H','Committed a group criminal assault with or without weapons',2500,'$2500',30)">Add</button></td></tr>
+            <tr><td>(5) I. Performing A Drive-By Using Light or Heavy Fire Arms</td><td>$1500</td><td>35</td><td><button class="btn" onclick="addCharge('5I','Performing A Drive-By Using Light or Heavy Fire Arms',1500,'$1500',35)">Add</button></td></tr>
+            <tr><td>(5) J. Melee Robbery</td><td>$500</td><td>15</td><td><button class="btn" onclick="addCharge('5J','Melee Robbery',500,'$500',15)">Add</button></td></tr>
+            <tr><td>(5) K. Armed Robbery</td><td>$1000</td><td>30</td><td><button class="btn" onclick="addCharge('5K','Armed Robbery',1000,'$1000',30)">Add</button></td></tr>
+            <tr><td>(5) L. Piracy</td><td>$1000</td><td>20</td><td><button class="btn" onclick="addCharge('5L','Piracy',1000,'$1000',20)">Add</button></td></tr>
+            <tr><td>(5) M. Grand Theft</td><td>$1000</td><td>25</td><td><button class="btn" onclick="addCharge('5M','Grand Theft',1000,'$1000',25)">Add</button></td></tr>
+            <tr><td>(5) N. Grand Theft Auto</td><td>$500</td><td>15</td><td><button class="btn" onclick="addCharge('5N','Grand Theft Auto',500,'$500',15)">Add</button></td></tr>
+            <tr><td>(5) O. Grand Theft of Firearms</td><td>$1000</td><td>15</td><td><button class="btn" onclick="addCharge('5O','Grand Theft of Firearms',1000,'$1000',15)">Add</button></td></tr>
+            <tr><td>(5) P. Abuse or Desecration of Dead Human Body</td><td>$1000</td><td>15</td><td><button class="btn" onclick="addCharge('5P','Abuse or Desecration of Dead Human Body',1000,'$1000',15)">Add</button></td></tr>
+            <tr><td>(5) Q. Kidnapping</td><td>$1000</td><td>30</td><td><button class="btn" onclick="addCharge('5Q','Kidnapping',1000,'$1000',30)">Add</button></td></tr>
+            <tr><td>(5) R. Hostage Taking</td><td>$1500</td><td>60</td><td><button class="btn" onclick="addCharge('5R','Hostage Taking',1500,'$1500',60)">Add</button></td></tr>
+            <tr><td>(5) S. Torture</td><td>$1000</td><td>20</td><td><button class="btn" onclick="addCharge('5S','Torture',1000,'$1000',20)">Add</button></td></tr>
+            <tr><td>(5) T. Blackmail</td><td>$500</td><td>10</td><td><button class="btn" onclick="addCharge('5T','Blackmail',500,'$500',10)">Add</button></td></tr>
+            <tr><td>(5) U. Human Trafficking</td><td>$1000</td><td>65</td><td><button class="btn" onclick="addCharge('5U','Human Trafficking',1000,'$1000',65)">Add</button></td></tr>
+
+            <tr class="section-header">
+                <th colspan="4">SECTION CODE 06 — Crime Against the Person, Involving Sexual Assault, Public Decency, and Good Moral</th>
+            </tr>
+            <tr><td>(6) A. Sexual Harassment</td><td>$500</td><td>10</td><td><button class="btn" onclick="addCharge('6A','Sexual Harassment',500,'$500',10)">Add</button></td></tr>
+            <tr><td>(6) B. Rape</td><td>$1000</td><td>60</td><td><button class="btn" onclick="addCharge('6B','Rape',1000,'$1000',60)">Add</button></td></tr>
+            <tr><td>(6) C. Statutory Rape</td><td>$500</td><td>75</td><td><button class="btn" onclick="addCharge('6C','Statutory Rape',500,'$500',75)">Add</button></td></tr>
+            <tr><td>(6) D. Prostitution</td><td>$500</td><td>30</td><td><button class="btn" onclick="addCharge('6D','Prostitution',500,'$500',30)">Add</button></td></tr>
+            <tr><td>(6) E. Solicitation of Sexual Engagement</td><td>$600</td><td>30</td><td><button class="btn" onclick="addCharge('6E','Solicitation of Sexual Engagement',600,'$600',30)">Add</button></td></tr>
+            <tr><td>(6) F. Being Naked In Public</td><td>$250</td><td>5</td><td><button class="btn" onclick="addCharge('6F','Being Naked In Public',250,'$250',5)">Add</button></td></tr>
+            <tr><td>(6) G. Performs Any Sexual Action in Public</td><td>$500</td><td>15</td><td><button class="btn" onclick="addCharge('6G','Performs Any Sexual Action in Public',500,'$500',15)">Add</button></td></tr>
+
+            <tr class="section-header">
+                <th colspan="4">SECTION CODE 07 — Crime Against Public Peace</th>
+            </tr>
+            <tr><td>(7) A. Initiating A Riot</td><td>$1000</td><td>15</td><td><button class="btn" onclick="addCharge('7A','Initiating A Riot',1000,'$1000',15)">Add</button></td></tr>
+            <tr><td>(7) B. Failing to Disperse After Lawfully Ordered by The Officials</td><td>$500</td><td>20</td><td><button class="btn" onclick="addCharge('7B','Failing to Disperse After Lawfully Ordered by The Officials',500,'$500',20)">Add</button></td></tr>
+            <tr><td>(7) C. Participating in a Riot</td><td>$500</td><td>10</td><td><button class="btn" onclick="addCharge('7C','Participating in a Riot',500,'$500',10)">Add</button></td></tr>
+            <tr><td>(7) D. Spitting in Public Space</td><td>$250</td><td>0</td><td><button class="btn" onclick="addCharge('7D','Spitting in Public Space',250,'$250',0)">Add</button></td></tr>
+            <tr><td>(7) E. Pee in Public</td><td>$250</td><td>0</td><td><button class="btn" onclick="addCharge('7E','Pee in Public',250,'$250',0)">Add</button></td></tr>
+            <tr><td>(7) F. Drunk in Public Space</td><td>Max $250</td><td>0</td><td><button class="btn" onclick="addCharge('7F','Drunk in Public Space',250,'Max $250',0)">Add</button></td></tr>
+            <tr><td>(7) G. Vilification</td><td>$500</td><td>15</td><td><button class="btn" onclick="addCharge('7G','Vilification',500,'$500',15)">Add</button></td></tr>
+            <tr><td>(7) H. Hate Speech</td><td>$500</td><td>20</td><td><button class="btn" onclick="addCharge('7H','Hate Speech',500,'$500',20)">Add</button></td></tr>
+            <tr><td>(7) I. Vigilantism</td><td>$1000</td><td>30</td><td><button class="btn" onclick="addCharge('7I','Vigilantism',1000,'$1000',30)">Add</button></td></tr>
+            <tr><td>(7) J. Disturbing Public Peace</td><td>$500</td><td>15</td><td><button class="btn" onclick="addCharge('7J','Disturbing Public Peace',500,'$500',15)">Add</button></td></tr>
+            <tr><td>(7) K. Brawl in Public Space</td><td>$500</td><td>20</td><td><button class="btn" onclick="addCharge('7K','Brawl in Public Space',500,'$500',20)">Add</button></td></tr>
+            <tr><td>(7) L. Accessories Disturbance</td><td>Verbal Warning / Max $250 / Possible Imprisonment</td><td>0</td><td><button class="btn" onclick="addCharge('7L','Accessories Disturbance',0,'Verbal Warning / Max $250 / Possible Imprisonment',0)">Add</button></td></tr>
+            <tr><td>(7) M. Jaywalk</td><td>$250</td><td>0</td><td><button class="btn" onclick="addCharge('7M','Jaywalk',250,'$250',0)">Add</button></td></tr>
+            <tr><td>(7) N. Littering the Public Facility / Space</td><td>$250</td><td>0</td><td><button class="btn" onclick="addCharge('7N','Littering the Public Facility / Space',250,'$250',0)">Add</button></td></tr>
+            <tr><td>(7) O. Unlawful Assembly</td><td>$500</td><td>20</td><td><button class="btn" onclick="addCharge('7O','Unlawful Assembly',500,'$500',20)">Add</button></td></tr>
+            <tr><td>(7) P. Stalking</td><td>$500</td><td>20</td><td><button class="btn" onclick="addCharge('7P','Stalking',500,'$500',20)">Add</button></td></tr>
+            <tr><td>(7) Q. Public Intoxication</td><td>$250</td><td>10</td><td><button class="btn" onclick="addCharge('7Q','Public Intoxication',250,'$250',10)">Add</button></td></tr>
+            <tr><td>(7) R. Animal Abuse</td><td>$500</td><td>20</td><td><button class="btn" onclick="addCharge('7R','Animal Abuse',500,'$500',20)">Add</button></td></tr>
+            <tr><td>(7) S. Animal Cruelty</td><td>$500</td><td>0</td><td><button class="btn" onclick="addCharge('7S','Animal Cruelty',500,'$500',0)">Add</button></td></tr>
+
+            <tr class="section-header">
+                <th colspan="4">SECTION CODE 08 — Crime Against Public Justice</th>
+            </tr>
+            <tr><td>(8) A. Obstruction of Justice</td><td>$500</td><td>15</td><td><button class="btn" onclick="addCharge('8A','Obstruction of Justice',500,'$500',15)">Add</button></td></tr>
+            <tr><td>(8) B. Abusing Government Hotline (Ex : 911, 555, Etc)</td><td>$250</td><td>10</td><td><button class="btn" onclick="addCharge('8B','Abusing Government Hotline (Ex : 911, 555, Etc)',250,'$250',10)">Add</button></td></tr>
+            <tr><td>(8) C. Governments Attribute</td><td>$500</td><td>60</td><td><button class="btn" onclick="addCharge('8C','Governments Attribute',500,'$500',60)">Add</button></td></tr>
+            <tr><td>(8) D. Impersonating Government Staff</td><td>$500</td><td>60</td><td><button class="btn" onclick="addCharge('8D','Impersonating Government Staff',500,'$500',60)">Add</button></td></tr>
+            <tr><td>(8) E. Attempting to Bribe or Corrupt Any Public Officials</td><td>$5000</td><td>15</td><td><button class="btn" onclick="addCharge('8E','Attempting to Bribe or Corrupt Any Public Officials',5000,'$5000',15)">Add</button></td></tr>
+            <tr><td>(8) F. Attempting to bribe, corrupt or prevent any crime’s witnesses to step out and give out information to law enforcers</td><td>$5000</td><td>10</td><td><button class="btn" onclick="addCharge('8F','Attempting to bribe, corrupt or prevent any crime’s witnesses to step out and give out information to law enforcers',5000,'$5000',10)">Add</button></td></tr>
+            <tr><td>(8) G. Making a False Report via government hotline</td><td>$500</td><td>20</td><td><button class="btn" onclick="addCharge('8G','Making a False Report via government hotline',500,'$500',20)">Add</button></td></tr>
+            <tr><td>(8) H. Giving False Information to the Police Officials</td><td>$1000</td><td>20</td><td><button class="btn" onclick="addCharge('8H','Giving False Information to the Police Officials',1000,'$1000',20)">Add</button></td></tr>
+            <tr><td>(8) I. Perjury</td><td>$5000</td><td>20</td><td><button class="btn" onclick="addCharge('8I','Perjury',5000,'$5000',20)">Add</button></td></tr>
+            <tr><td>(8) J. Assaulting on LEO</td><td>$1000</td><td>40</td><td><button class="btn" onclick="addCharge('8J','Assaulting on LEO',1000,'$1000',40)">Add</button></td></tr>
+            <tr><td>(8) K. Attempted Murdering A Public Officials</td><td>$1500</td><td>60</td><td><button class="btn" onclick="addCharge('8K','Attempted Murdering A Public Officials',1500,'$1500',60)">Add</button></td></tr>
+            <tr><td>(8) L. Murdering A Public Officials</td><td>$2000</td><td>70</td><td><button class="btn" onclick="addCharge('8L','Murdering A Public Officials',2000,'$2000',70)">Add</button></td></tr>
+            <tr><td>(8) M. Harboring Criminals</td><td>$1000</td><td>30</td><td><button class="btn" onclick="addCharge('8M','Harboring Criminals',1000,'$1000',30)">Add</button></td></tr>
+            <tr><td>(8) N. Fraud / Scam</td><td>$500</td><td>20</td><td><button class="btn" onclick="addCharge('8N','Fraud / Scam',500,'$500',20)">Add</button></td></tr>
+            <tr><td>(8) O. Forgery</td><td>$500</td><td>30</td><td><button class="btn" onclick="addCharge('8O','Forgery',500,'$500',30)">Add</button></td></tr>
+            <tr><td>(8) P. Corruption</td><td>$5000</td><td>300</td><td><button class="btn" onclick="addCharge('8P','Corruption',5000,'$5000',300)">Add</button></td></tr>
+
+            <tr class="section-header">
+                <th colspan="4">SECTION CODE 09 — Crime Against Property</th>
+            </tr>
+            <tr><td>(9) A. Trespassing</td><td>$250</td><td>5</td><td><button class="btn" onclick="addCharge('9A','Trespassing',250,'$250',5)">Add</button></td></tr>
+            <tr><td>(9) B. Trespassing Government Property</td><td>$250</td><td>20</td><td><button class="btn" onclick="addCharge('9B','Trespassing Government Property',250,'$250',20)">Add</button></td></tr>
+            <tr><td>(9) C. Vandalism</td><td>$250</td><td>15</td><td><button class="btn" onclick="addCharge('9C','Vandalism',250,'$250',15)">Add</button></td></tr>
+            <tr><td>(9) D. Arson</td><td>$1000</td><td>30</td><td><button class="btn" onclick="addCharge('9D','Arson',1000,'$1000',30)">Add</button></td></tr>
+            <tr><td>(9) E. Extortion</td><td>$500</td><td>20</td><td><button class="btn" onclick="addCharge('9E','Extortion',500,'$500',20)">Add</button></td></tr>
+            <tr><td>(9) F. Using Property As Illegal Distribution</td><td>$500</td><td>60</td><td><button class="btn" onclick="addCharge('9F','Using Property As Illegal Distribution',500,'$500',60)">Add</button></td></tr>
+        </table>
+    </div>
+
+    <div class="summary">
+        <h3>Charges & Fines Assessment</h3>
+
+        <table>
+            <tr>
+                <th>Charges</th>
+                <th>Fine</th>
+                <th>Jail</th>
+                <th>Action</th>
+            </tr>
+            <tbody id="summaryTable"></tbody>
+        </table>
+
+        <div class="total">
+            <div class="total-box">
+                <h4>Total Fine</h4>
+                <p>$<span id="fine">0</span></p>
+            </div>
+            <div class="total-box">
+                <h4>Total Jail</h4>
+                <p><span id="jail">0</span> mo</p>
+            </div>
+        </div>
+
+        <textarea id="summaryText" readonly></textarea>
+        <br>
+        <button class="btn" onclick="copySummary()">Copy /do</button>
+    </div>
+
+</div>
+
+<script>
+let totalFine = 0;
+let totalJail = 0;
+let chargesList = [];
+
+function addCharge(code, name, fineValue, fineLabel, jail) {
+    totalFine += fineValue;
+    totalJail += jail;
+
+    let category = 'traffic';
+    if (code.startsWith('2')) category = 'permit';
+    if (
+        code.startsWith('3') ||
+        code.startsWith('4') ||
+        code.startsWith('5') ||
+        code.startsWith('6') ||
+        code.startsWith('7') ||
+        code.startsWith('8') ||
+        code.startsWith('9') ||
+        jail >= 30
+    ) category = 'crime';
+
+    chargesList.push({ code, name, fineValue, fineLabel, jail, category });
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+        <td><span class="badge ${category}">${code}</span> ${name}</td>
+        <td>${fineLabel}</td>
+        <td>${jail}</td>
+        <td><button class="btn remove" onclick="removeCharge(this, '${code}', ${fineValue}, ${jail})">X</button></td>
+    `;
+
+    document.getElementById("summaryTable").appendChild(row);
+    updateUI();
+}
+
+function removeCharge(el, code, fineValue, jail) {
+    totalFine -= fineValue;
+    totalJail -= jail;
+
+    const index = chargesList.findIndex(c => c.code === code);
+    if (index !== -1) {
+        chargesList.splice(index, 1);
+    }
+
+    el.parentElement.parentElement.remove();
+    updateUI();
+}
+
+function getTime() {
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    return `${day}/${month}/${year}, ${hours}:${minutes}:${seconds}`;
+}
+
+function updateUI() {
+    const maxJail = 60;
+    const jail = Math.min(totalJail, maxJail);
+
+    document.getElementById("fine").innerText = totalFine;
+    document.getElementById("jail").innerText = jail;
+
+    chargesList.sort((a, b) => a.code.localeCompare(b.code));
+
+    const sec1 = chargesList.filter(c => c.code.startsWith('1'));
+    const sec2 = chargesList.filter(c => c.code.startsWith('2'));
+    const sec3 = chargesList.filter(c => c.code.startsWith('3'));
+    const sec4 = chargesList.filter(c => c.code.startsWith('4'));
+    const sec5 = chargesList.filter(c => c.code.startsWith('5'));
+    const sec6 = chargesList.filter(c => c.code.startsWith('6'));
+    const sec7 = chargesList.filter(c => c.code.startsWith('7'));
+    const sec8 = chargesList.filter(c => c.code.startsWith('8'));
+    const sec9 = chargesList.filter(c => c.code.startsWith('9'));
+
+    let summary = "";
+
+    if (sec1.length) {
+        summary += `[LSPD][${getTime()}] Section Code 1. Transportation & Road Services :\n`;
+        sec1.forEach(c => summary += `[LSPD][${getTime()}] - ${c.code}. ${c.name}\n`);
+    }
+
+    if (sec2.length) {
+        if (summary !== "") summary += `\n`;
+        summary += `[LSPD][${getTime()}] Section Code 2. License & Permit Law :\n`;
+        sec2.forEach(c => summary += `[LSPD][${getTime()}] - ${c.code}. ${c.name}\n`);
+    }
+
+    if (sec3.length) {
+        if (summary !== "") summary += `\n`;
+        summary += `[LSPD][${getTime()}] Section Code 3. Control of Drugs :\n`;
+        sec3.forEach(c => summary += `[LSPD][${getTime()}] - ${c.code}. ${c.name}\n`);
+    }
+
+    if (sec4.length) {
+        if (summary !== "") summary += `\n`;
+        summary += `[LSPD][${getTime()}] Section Code 4. Control of Deadly Weapons :\n`;
+        sec4.forEach(c => summary += `[LSPD][${getTime()}] - ${c.code}. ${c.name}\n`);
+    }
+
+    if (sec5.length) {
+        if (summary !== "") summary += `\n`;
+        summary += `[LSPD][${getTime()}] Section Code 5. Crime Against the Person :\n`;
+        sec5.forEach(c => summary += `[LSPD][${getTime()}] - ${c.code}. ${c.name}\n`);
+    }
+
+    if (sec6.length) {
+        if (summary !== "") summary += `\n`;
+        summary += `[LSPD][${getTime()}] Section Code 6. Crime Against the Person, Involving Sexual Assault, Public Decency, and Good Moral :\n`;
+        sec6.forEach(c => summary += `[LSPD][${getTime()}] - ${c.code}. ${c.name}\n`);
+    }
+
+    if (sec7.length) {
+        if (summary !== "") summary += `\n`;
+        summary += `[LSPD][${getTime()}] Section Code 7. Crime Against Public Peace :\n`;
+        sec7.forEach(c => summary += `[LSPD][${getTime()}] - ${c.code}. ${c.name}\n`);
+    }
+
+    if (sec8.length) {
+        if (summary !== "") summary += `\n`;
+        summary += `[LSPD][${getTime()}] Section Code 8. Crime Against Public Justice :\n`;
+        sec8.forEach(c => summary += `[LSPD][${getTime()}] - ${c.code}. ${c.name}\n`);
+    }
+
+    if (sec9.length) {
+        if (summary !== "") summary += `\n`;
+        summary += `[LSPD][${getTime()}] Section Code 9. Crime Against Property :\n`;
+        sec9.forEach(c => summary += `[LSPD][${getTime()}] - ${c.code}. ${c.name}\n`);
+    }
+
+    summary += `-----------------------------\n`;
+    summary += `Total Fine: $${totalFine}\n`;
+    summary += `Total Jail: ${jail} months`;
+
+    document.getElementById("summaryText").value = summary;
+}
+
+function copySummary() {
+    const text = document.getElementById("summaryText");
+    text.select();
+    text.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    alert("Copied /do!");
+}
+
+function searchTable() {
+    const input = document.getElementById("searchInput").value.toLowerCase();
+    const tr = document.getElementById("chargeTable").getElementsByTagName("tr");
+
+    for (let i = 1; i < tr.length; i++) {
+        const text = tr[i].innerText.toLowerCase();
+        tr[i].style.display = text.includes(input) ? "" : "none";
+    }
+}
+</script>
+
+</body>
+</html>
