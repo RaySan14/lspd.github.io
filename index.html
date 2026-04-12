@@ -497,7 +497,7 @@ textarea {
         </div>
 
         <textarea id="summaryText" readonly></textarea>
-        <button class="btn" style="margin-top:10px; width:100%;" onclick="copySummary()">Copy /do</button>
+        <button class="btn" style="margin-top:10px; width:100%;" onclick="copySummary()">Copy</button>
         <div class="small-note">Maximum displayed total jail time is capped at 60 months.</div>
     </div>
 
@@ -632,7 +632,7 @@ function copySummary() {
     text.select();
     text.setSelectionRange(0, 99999);
     document.execCommand("copy");
-    alert("Copied /do!");
+    alert("Copied!");
 }
 
 function searchTable() {
