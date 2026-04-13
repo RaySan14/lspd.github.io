@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LSPD Daily Field Activities Report</title>
+  <style>
+    :root {
+      --border: #0b1b2b;
+      --border-soft: #1f3852;
+      --bg: #0a1622;
+      --bg-panel: #102235;
+      --bg-panel-2: #132a40;
+      --bg-panel-3: #0c1c2b;
+      --muted: #17314a;
+      --text: #eaf3ff;
+      --text-soft: #a9bfd8;
+      --accent: #caa85c;
+      --accent-2: #f1d38d;
+      --input: #0f2437;
+      --input-border: #294663;
+      --success: #274b34;
+      --danger: #5d1f28;
+      --shadow: rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      background:
+        radial-gradient(circle at top, rgba(202, 168, 92, 0.08), transparent 26%),
+        linear-gradient(180deg, #07111b 0%, #0b1724 100%);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, rgba(20, 42, 65, 0.98) 0%, rgba(11, 27, 43, 0.98) 100%);
+      border: 1px solid var(--border-soft);
+      padding: 20px;
+      box-shadow: 0 14px 36px var(--shadow);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .toolbar {
+      max-width: 1100px;
+      margin: 0 auto 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      border: 1px solid var(--border-soft);
+      background: linear-gradient(180deg, #16324b 0%, #102438 100%);
+      color: var(--text);
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 700;
+      border-radius: 10px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    button:hover {
+      background: linear-gradient(180deg, #1b3b59 0%, #14304a 100%);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    .header {
+      text-align: center;
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+      padding: 18px 12px;
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(202, 168, 92, 0.1) 0%, rgba(202, 168, 92, 0.02) 100%), linear-gradient(180deg, #102338 0%, #0d1f30 100%);
+    }
+
+    .header .agency {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent-2);
+      text-shadow: 0 0 12px rgba(202, 168, 92, 0.15);
+    }
+
+    .header .title {
+      font-size: 24px;
+      font-weight: 800;
+      margin-top: 4px;
+      color: var(--text);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      background: rgba(7, 17, 27, 0.32);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    td, th {
+      border: 1px solid var(--border-soft);
+      padding: 8px;
+      vertical-align: top;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    th, .label {
+      background: linear-gradient(180deg, #18324a 0%, #13293d 100%);
+      font-weight: 700;
+      color: var(--accent-2);
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="time"],
+    input[type="url"],
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid var(--input-border);
+      padding: 8px 10px;
+      font: inherit;
+      color: var(--text);
+      background: linear-gradient(180deg, #10263b 0%, #0d2133 100%);
+      min-height: 36px;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--text-soft);
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(202, 168, 92, 0.12);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .screenshots {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .shot-card {
+      border: 1px solid var(--border-soft);
+      padding: 10px;
+      background: linear-gradient(180deg, #11263b 0%, #0d2031 100%);
+      border-radius: 12px;
+    }
+
+    .preview {
+      margin-top: 8px;
+      min-height: 180px;
+      border: 1px dashed #3a5674;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: rgba(3, 10, 16, 0.45);
+      border-radius: 10px;
+    }
+
+    .preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .placeholder {
+      color: var(--text-soft);
+      font-size: 13px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .links-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .small {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .footer-note {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .danger {
+      border-color: #8b3542;
+      background: linear-gradient(180deg, #5d1f28 0%, #42171d 100%);
+    }
+
+    .danger:hover {
+      border-color: #d9838f;
+      background: linear-gradient(180deg, #6e2530 0%, #4f1b23 100%);
+    }
+
+    .output-wrap {
+      max-width: 1100px;
+      margin: 16px auto 0;
+      background: linear-gradient(180deg, rgba(20, 42, 65, 0.98) 0%, rgba(11, 27, 43, 0.98) 100%);
+      border: 1px solid var(--border-soft);
+      padding: 16px;
+      box-shadow: 0 14px 36px var(--shadow);
+      border-radius: 14px;
+    }
+
+    .output-wrap h3 {
+      margin-bottom: 10px;
+      color: var(--accent-2);
+      letter-spacing: 1px;
+    }
+
+    .output-box {
+      width: 100%;
+      min-height: 320px;
+      font-family: Consolas, Monaco, monospace;
+      white-space: pre-wrap;
+      background: linear-gradient(180deg, #091522 0%, #0c1a29 100%);
+      color: #dce9f7;
+      border: 1px solid var(--input-border);
+      border-radius: 10px;
+    }
+
+    @media (max-width: 900px) {
+      .two-col,
+      .screenshots {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+        color: #111;
+      }
+
+      .toolbar,
+      .output-wrap,
+      .small,
+      .footer-note {
+        display: none !important;
+      }
+
+      .page {
+        max-width: 100%;
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
+        padding: 0;
+        background: white;
+      }
+
+      .header,
+      table,
+      .shot-card {
+        background: white !important;
+      }
+
+      td, th {
+        color: #111;
+        border: 1px solid #333;
+      }
+
+      th, .label {
+        color: #111;
+        background: #f1f1f1 !important;
+      }
+
+      input, textarea, select {
+        border: none;
+        background: transparent;
+        color: #111;
+        padding: 0;
+        box-shadow: none;
+      }
+
+      .preview {
+        border: 1px solid #333;
+        background: white;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button type="button" onclick="addActivityRow()">+ Tambah Activity Row</button>
+    <button type="button" onclick="removeActivityRow()">- Hapus Activity Row</button>
+    <button type="button" onclick="addArrestLink()">+ Tambah Arrest Report</button>
+    <button type="button" onclick="addInvestigativeLink()">+ Tambah Investigative Report</button>
+    <button type="button" onclick="addScreenshot()">+ Tambah Screenshot</button>
+    
+    <button type="button" onclick="saveData()">Simpan & Generate BBCode</button>
+    
+    <button type="button" onclick="copyBBCode()">Copy BBCode</button>
+    <button type="button" class="danger" onclick="resetFormData()">Reset</button>
+  </div>
+
+  <div class="page">
+    <div class="header">
+      <div class="agency">LOS SANTOS POLICE DEPARTMENT</div>
+      <div class="title">DAILY FIELD ACTIVITIES REPORT</div>
+    </div>
+
+    <table>
+      <tr>
+        <td class="label" style="width: 18%;">DATE</td>
+        <td style="width: 15%;"><input data-save="date" type="date" /></td>
+        <td class="label" style="width: 18%;">CALLSIGN</td>
+        <td style="width: 19%;"><input data-save="callsign" type="text" placeholder="Insert your callsign here" /></td>
+        <td class="label" style="width: 12%;">PARTNER</td>
+        <td style="width: 18%;"><input data-save="partner" type="text" placeholder="Rank Firstname Lastname" /></td>
+      </tr>
+    </table>
+
+    <table id="activity-table">
+      <thead>
+        <tr>
+          <th style="width: 10%;">TIME</th>
+          <th style="width: 20%;">LOCATION</th>
+          <th style="width: 50%;">DISPOSITION</th>
+          <th style="width: 20%;">SUPERVISOR AT SCENE</th>
+        </tr>
+      </thead>
+      <tbody id="activity-body"></tbody>
+    </table>
+
+    <div class="two-col">
+      <table>
+        <tr><td class="label">ARREST REPORT</td></tr>
+        <tr>
+          <td>
+            <div id="arrest-links" class="links-list"></div>
+          </td>
+        </tr>
+      </table>
+
+      <table>
+        <tr><td class="label">INVESTIGATIVE REPORT</td></tr>
+        <tr>
+          <td>
+            <div id="investigative-links" class="links-list"></div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <table>
+      <tr>
+        <td class="label">(( SCREENSHOTS ))</td>
+      </tr>
+      <tr>
+        <td>
+          <div id="screenshot-list" class="screenshots"></div>
+        </td>
+      </tr>
+    </table>
+
+    <table>
+      <tr>
+        <td class="label" style="width: 45%;">OFFICER RANK AND NAME</td>
+        <td class="label" style="width: 20%;">SERIAL NO.</td>
+        <td class="label" style="width: 35%;">DIVISION</td>
+      </tr>
+      <tr>
+        <td><input data-save="officer_name" type="text" value="Police Officer I Calvin Stone" /></td>
+        <td><input data-save="serial_no" type="text" value="" /></td>
+        <td><input data-save="division" type="text" value="Central Patrol Division" /></td>
+      </tr>
+    </table>
+
+    <div class="footer-note">
+      Tombol <b>Simpan & Generate BBCode</b> akan menyimpan data ke browser sekaligus membuat hasil BBCode yang siap copy-paste.
+    </div>
+  </div>
+
+  <div class="output-wrap">
+    <h3>Output BBCode</h3>
+    <textarea id="bbcode-output" class="output-box" readonly placeholder="Hasil BBCode akan muncul di sini..."></textarea>
+  </div>
+
+  <template id="activity-row-template">
+    <tr>
+      <td><input type="time" class="activity-time" /></td>
+      <td><input type="text" class="activity-location" placeholder="Location here" /></td>
+      <td><textarea class="activity-disposition" placeholder="State the incident/activity you were in..."></textarea></td>
+      <td><input type="text" class="activity-supervisor" placeholder="Rank Firstname Lastname" /></td>
+    </tr>
+  </template>
+
+  <template id="link-template">
+    <div class="link-item">
+      <input type="text" class="report-label" placeholder="Judul report, contoh: Arrest Report #1" />
+      <input type="url" class="report-url" placeholder="https://example.com/report-link" />
+    </div>
+  </template>
+
+  <template id="screenshot-template">
+    <div class="shot-card">
+      <input type="url" class="screenshot-url" placeholder="https://example.com/screenshot.png" oninput="updatePreview(this)" />
+      <div class="preview">
+        <div class="placeholder">Preview screenshot akan muncul di sini</div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    const STORAGE_KEY = 'lspd_daily_field_activities_report_v2';
+
+    function addActivityRow(data = {}) {
+      const tpl = document.getElementById('activity-row-template');
+      const clone = tpl.content.cloneNode(true);
+      const row = clone.querySelector('tr');
+      row.querySelector('.activity-time').value = data.time || '';
+      row.querySelector('.activity-location').value = data.location || '';
+      row.querySelector('.activity-disposition').value = data.disposition || '';
+      row.querySelector('.activity-supervisor').value = data.supervisor || '';
+      document.getElementById('activity-body').appendChild(row);
+    }
+
+    function removeActivityRow() {
+      const tbody = document.getElementById('activity-body');
+      if (tbody.rows.length > 1) tbody.deleteRow(tbody.rows.length - 1);
+      generateBBCode();
+    }
+
+    function addArrestLink(data = {}) {
+      addReportLink('arrest-links', data);
+    }
+
+    function addInvestigativeLink(data = {}) {
+      addReportLink('investigative-links', data);
+    }
+
+    function addReportLink(containerId, data = {}) {
+      const tpl = document.getElementById('link-template');
+      const clone = tpl.content.cloneNode(true);
+      clone.querySelector('.report-label').value = data.label || '';
+      clone.querySelector('.report-url').value = data.url || '';
+      document.getElementById(containerId).appendChild(clone);
+    }
+
+    function addScreenshot(data = {}) {
+      const tpl = document.getElementById('screenshot-template');
+      const clone = tpl.content.cloneNode(true);
+      const card = clone.querySelector('.shot-card');
+      const input = card.querySelector('.screenshot-url');
+      input.value = data.url || '';
+      document.getElementById('screenshot-list').appendChild(card);
+      if (data.url) updatePreview(input);
+    }
+
+    function updatePreview(input) {
+      const preview = input.parentElement.querySelector('.preview');
+      const url = input.value.trim();
+      if (!url) {
+        preview.innerHTML = '<div class="placeholder">Preview screenshot akan muncul di sini</div>';
+        generateBBCode();
+        return;
+      }
+      preview.innerHTML = `<img src="${escapeHtmlAttr(url)}" alt="Screenshot Preview" onerror="this.parentElement.innerHTML='<div class=\'placeholder\'>Gagal memuat gambar. Cek link screenshot.</div>'">`;
+      generateBBCode();
+    }
+
+    function escapeHtmlAttr(str) {
+      return str.replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+    }
+
+    function bbEscape(str = '') {
+      return String(str).replace(/\[/g, '&#91;').replace(/\]/g, '&#93;').trim();
+    }
+
+    function formatDateForBBCode(dateStr) {
+      if (!dateStr) return 'DD/MMM/YYYY';
+      const date = new Date(dateStr + 'T00:00:00');
+      const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+      const dd = String(date.getDate()).padStart(2, '0');
+      const mmm = months[date.getMonth()] || 'MMM';
+      const yyyy = date.getFullYear();
+      return `${dd}/${mmm}/${yyyy}`;
+    }
+
+    function gatherData() {
+      const data = {};
+      document.querySelectorAll('[data-save]').forEach(el => {
+        data[el.dataset.save] = el.value;
+      });
+
+      data.activities = Array.from(document.querySelectorAll('#activity-body tr')).map(row => ({
+        time: row.querySelector('.activity-time')?.value || '',
+        location: row.querySelector('.activity-location')?.value || '',
+        disposition: row.querySelector('.activity-disposition')?.value || '',
+        supervisor: row.querySelector('.activity-supervisor')?.value || ''
+      }));
+
+      data.arrestReports = Array.from(document.querySelectorAll('#arrest-links .link-item')).map(item => ({
+        label: item.querySelector('.report-label')?.value || '',
+        url: item.querySelector('.report-url')?.value || ''
+      }));
+
+      data.investigativeReports = Array.from(document.querySelectorAll('#investigative-links .link-item')).map(item => ({
+        label: item.querySelector('.report-label')?.value || '',
+        url: item.querySelector('.report-url')?.value || ''
+      }));
+
+      data.screenshots = Array.from(document.querySelectorAll('#screenshot-list .shot-card')).map(card => ({
+        url: card.querySelector('.screenshot-url')?.value || ''
+      }));
+
+      return data;
+    }
+
+    function generateBBCode() {
+      const data = gatherData();
+      const dateFormatted = formatDateForBBCode(data.date);
+
+      const activityRows = (data.activities.length ? data.activities : [{}]).map(item => `          [tr]\n          [td] ${bbEscape(item.time || 'HH:HH')}\n          [td] ${bbEscape(item.location || 'Location here')}\n          [td] ${bbEscape(item.disposition || 'State the incident/activity you were in, for example: Code 6 on a blue sedan, index 3KO2N3T01 at Strawberry Avenue.')}\n          [td] ${bbEscape(item.supervisor || 'Rank Firstname Lastname')}`).join('\n\n');
+
+      const arrestLinks = (data.arrestReports.length ? data.arrestReports : [{ label: 'Arrest Report #1', url: '' }])
+        .filter(item => item.label || item.url)
+        .map(item => `                [url=${bbEscape(item.url || 'masukkan link arrest report disini')}]${bbEscape(item.label || 'Arrest Report')}[/url]`)
+        .join('\n');
+
+      const investigativeLinks = (data.investigativeReports.length ? data.investigativeReports : [{ label: 'Investigative Report #1', url: '' }])
+        .filter(item => item.label || item.url)
+        .map(item => `                [url=${bbEscape(item.url || 'masukkan link investigative report disini')}]${bbEscape(item.label || 'Investigative Report')}[/url]`)
+        .join('\n');
+
+      const screenshots = (data.screenshots.length ? data.screenshots : [{ url: '' }])
+        .filter(item => item.url)
+        .map(item => `                [altspoiler=Screenshots] [img]${bbEscape(item.url)}[/img] [/altspoiler]`)
+        .join('\n');
+
+      const bbcode = `[block=transparent,1,black,10,10,10]\n ‏‏‎ \n[center][lspdbw=150]\nLOS SANTOS POLICE DEPARTMENT\n[b]DAILY FIELD ACTIVITIES REPORT[/b][/center]\n\n[space][table2=1,85]\n\n          [tr]\n          [td] [b] DATE [/b]\n          ${bbEscape(dateFormatted)}\n\n          [td] [b] CALLSIGN [/b]\n          ${bbEscape(data.callsign || 'Insert your callsign here.')}\n\n          [td] [b] PARTNER [/b]\n          ${bbEscape(data.partner || 'Rank Firstname Lastname')}\n\n[/table2]\n\n[space][table2=1,85]\n\n          [tr]\n          [td] [b] TIME [/b]\n          [td] [b] LOCATION [/b]\n          [td] [b] DISPOSITION [/b]\n          [td] [b] SUPERVISOR AT SCENE [/b]\n\n${activityRows}\n\n[/table2]\n\n[space][table2=1,85]\n\n          [tr]\n          [td] ARREST REPORT\n          [td] INVESTIGATIVE REPORT\n\n          [tr]\n          [td] ${arrestLinks || '[url=masukkan link arrest report disini]Arrest Report #1[/url]'}\n\n          [td] ${investigativeLinks || '[url=masukkan link investigative report disini]Investigative Report #1[/url]'}\n\n[/table2]\n\n[space][table2=1,85]\n\n          [tr]\n          [td][b](( SCREENSHOTS ))[/b]\n\n          [tr]\n          [td] ${screenshots || '[altspoiler=Screenshots] [img]Put your screenshot link here.[/img] [/altspoiler]'}\n\n[/table2]\n\n[space][table2=1,85]\n\n          [tr]\n          [td] [b]OFFICER RANK AND NAME[/b]\n          [td] [b]SERIAL NO.[/b]\n          [td] [b]DIVISION[/b]\n\n          [tr]\n          [td] ${bbEscape(data.officer_name || 'Police Officer I Calvin Stone')}\n          [td] ${bbEscape(data.serial_no || '0177')}\n          [td] ${bbEscape(data.division || 'Central Patrol Division')}\n\n[/table2]\n ‏‏‎ \n[/block]`;
+
+      document.getElementById('bbcode-output').value = bbcode;
+      return bbcode;
+    }
+
+    function saveData() {
+      const payload = gatherData();
+      payload.bbcode = generateBBCode();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      alert('Data berhasil disimpan dan BBCode berhasil dibuat.');
+    }
+
+    function loadData() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        alert('Belum ada data tersimpan.');
+        return;
+      }
+      const data = JSON.parse(raw);
+      populateData(data);
+      document.getElementById('bbcode-output').value = data.bbcode || generateBBCode();
+      alert('Data berhasil dimuat.');
+    }
+
+    function copyBBCode() {
+      const output = document.getElementById('bbcode-output');
+      if (!output.value.trim()) generateBBCode();
+      output.select();
+      output.setSelectionRange(0, 999999);
+      document.execCommand('copy');
+      alert('BBCode berhasil disalin.');
+    }
+
+    function resetFormData() {
+      if (!confirm('Yakin ingin reset semua isi form?')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      initializeDefaults();
+      document.getElementById('bbcode-output').value = '';
+    }
+
+    function populateData(data) {
+      document.querySelectorAll('[data-save]').forEach(el => {
+        el.value = data[el.dataset.save] || '';
+      });
+
+      document.getElementById('activity-body').innerHTML = '';
+      (data.activities?.length ? data.activities : [{}]).forEach(addActivityRow);
+
+      document.getElementById('arrest-links').innerHTML = '';
+      (data.arrestReports?.length ? data.arrestReports : [{}, {}, {}]).forEach(addArrestLink);
+
+      document.getElementById('investigative-links').innerHTML = '';
+      (data.investigativeReports?.length ? data.investigativeReports : [{}, {}, {}]).forEach(addInvestigativeLink);
+
+      document.getElementById('screenshot-list').innerHTML = '';
+      (data.screenshots?.length ? data.screenshots : [{}, {}]).forEach(addScreenshot);
+
+      generateBBCode();
+    }
+
+    function initializeDefaults() {
+      populateData({
+        date: '',
+        callsign: '',
+        partner: '',
+        officer_name: 'Police Officer I Calvin Stone',
+        serial_no: '0177',
+        division: 'Central Patrol Division',
+        activities: [{}, {}, {}],
+        arrestReports: [
+          { label: 'Arrest Report #1', url: '' },
+          { label: 'Arrest Report #2', url: '' },
+          { label: 'Arrest Report #3', url: '' }
+        ],
+        investigativeReports: [
+          { label: 'Investigative Report #1', url: '' },
+          { label: 'Investigative Report #2', url: '' },
+          { label: 'Investigative Report #3', url: '' }
+        ],
+        screenshots: [{}, {}]
+      });
+    }
+
+    document.addEventListener('input', (e) => {
+      if (e.target.matches('input, textarea, select')) {
+        generateBBCode();
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        try {
+          const data = JSON.parse(raw);
+          populateData(data);
+          document.getElementById('bbcode-output').value = data.bbcode || generateBBCode();
+        } catch {
+          initializeDefaults();
+        }
+      } else {
+        initializeDefaults();
+      }
+    });
+  </script>
+  <div style="text-align:center; margin-top:20px; color:#a9bfd8; font-size:12px;">
+    © 2026 LSPD Built by (( RaySan ))
+  </div>
+</body>
+</html>
