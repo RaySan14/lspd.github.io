@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LSPD Arrest Warrant Generator</title>
+  <style>
+    :root {
+      --border: #0b1b2b;
+      --border-soft: #1f3852;
+      --bg: #0a1622;
+      --text: #eaf3ff;
+      --text-soft: #a9bfd8;
+      --accent: #caa85c;
+      --accent-2: #f1d38d;
+      --input-border: #294663;
+      --danger: #5d1f28;
+      --shadow: rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      background:
+        radial-gradient(circle at top, rgba(202, 168, 92, 0.08), transparent 26%),
+        linear-gradient(180deg, #07111b 0%, #0b1724 100%);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .toolbar, .page, .output-wrap {
+      max-width: 1100px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .toolbar {
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      border: 1px solid var(--border-soft);
+      background: linear-gradient(180deg, #16324b 0%, #102438 100%);
+      color: var(--text);
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 700;
+      border-radius: 10px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    button:hover {
+      background: linear-gradient(180deg, #1b3b59 0%, #14304a 100%);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .danger {
+      border-color: #8b3542;
+      background: linear-gradient(180deg, #5d1f28 0%, #42171d 100%);
+    }
+
+    .danger:hover {
+      border-color: #d9838f;
+      background: linear-gradient(180deg, #6e2530 0%, #4f1b23 100%);
+    }
+
+    .page, .output-wrap {
+      background: linear-gradient(180deg, rgba(20, 42, 65, 0.98) 0%, rgba(11, 27, 43, 0.98) 100%);
+      border: 1px solid var(--border-soft);
+      padding: 20px;
+      box-shadow: 0 14px 36px var(--shadow);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .output-wrap { margin-top: 16px; }
+
+    .header {
+      text-align: center;
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+      padding: 18px 12px;
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(202, 168, 92, 0.1) 0%, rgba(202, 168, 92, 0.02) 100%), linear-gradient(180deg, #102338 0%, #0d1f30 100%);
+    }
+
+    .header .agency {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent-2);
+      text-shadow: 0 0 12px rgba(202, 168, 92, 0.15);
+    }
+
+    .header .title {
+      font-size: 24px;
+      font-weight: 800;
+      margin-top: 4px;
+      color: var(--text);
+    }
+
+    h3 {
+      margin: 0 0 10px;
+      color: var(--accent-2);
+      letter-spacing: 1px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      background: rgba(7, 17, 27, 0.32);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    td, th {
+      border: 1px solid var(--border-soft);
+      padding: 8px;
+      vertical-align: top;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    th, .label {
+      background: linear-gradient(180deg, #18324a 0%, #13293d 100%);
+      font-weight: 700;
+      color: var(--accent-2);
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="url"],
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid var(--input-border);
+      padding: 8px 10px;
+      font: inherit;
+      color: var(--text);
+      background: linear-gradient(180deg, #10263b 0%, #0d2133 100%);
+      min-height: 36px;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--text-soft);
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(202, 168, 92, 0.12);
+    }
+
+    .two-col,
+    .three-col {
+      display: grid;
+      gap: 12px;
+    }
+
+    .two-col { grid-template-columns: 1fr 1fr; }
+    .three-col { grid-template-columns: repeat(3, 1fr); }
+
+    .section-card {
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 12px;
+      background: linear-gradient(180deg, #11263b 0%, #0d2031 100%);
+      margin-top: 14px;
+    }
+
+    .evidence-list,
+    .crime-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .evidence-card {
+      border: 1px solid var(--border-soft);
+      padding: 10px;
+      background: rgba(7, 17, 27, 0.32);
+      border-radius: 12px;
+    }
+
+    .preview {
+      margin-top: 8px;
+      min-height: 180px;
+      border: 1px dashed #3a5674;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: rgba(3, 10, 16, 0.45);
+      border-radius: 10px;
+    }
+
+    .preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .placeholder {
+      color: var(--text-soft);
+      font-size: 13px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .check-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 0;
+      color: var(--text);
+      border: 1px solid var(--border-soft);
+      background: rgba(7, 17, 27, 0.32);
+      border-radius: 12px;
+      padding: 12px;
+      min-height: 100%;
+    }
+
+    .check-line input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+    }
+
+    .output-box {
+      width: 100%;
+      min-height: 360px;
+      font-family: Consolas, Monaco, monospace;
+      white-space: pre-wrap;
+      background: linear-gradient(180deg, #091522 0%, #0c1a29 100%);
+      color: #dce9f7;
+      border: 1px solid var(--input-border);
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .footer-note {
+      margin-top: 10px;
+      text-align: center;
+      color: var(--text-soft);
+      font-size: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .two-col,
+      .three-col,
+      .service-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .mugshot-preview {
+      max-width: 220px;
+      min-height: 220px;
+      margin: 8px auto 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button type="button" onclick="addCrime()">+ Tambah Crime</button>
+    <button type="button" onclick="removeCrime()">- Hapus Crime</button>
+    <button type="button" onclick="addEvidence()">+ Tambah Evidence</button>
+    <button type="button" onclick="removeEvidence()">- Hapus Evidence</button>
+    <button type="button" onclick="saveData()">Simpan & Generate BBCode</button>
+    <button type="button" onclick="copyBBCode()">Copy BBCode</button>
+    <button type="button" class="danger" onclick="resetFormData()">Reset</button>
+  </div>
+
+  <div class="page">
+    <div class="header">
+      <div class="agency">LOS SANTOS POLICE DEPARTMENT</div>
+      <div class="title">PROBABLE CAUSE ARREST WARRANT</div>
+    </div>
+
+    <table>
+      <tr>
+        <td class="label" style="width:25%">WARRANT NO.</td>
+        <td style="width:25%"><input data-save="warrant_no" type="text" value="#001" /></td>
+        <td class="label" style="width:25%">COMPLAINT BY OFFICER</td>
+        <td style="width:25%"><input data-save="officer_name" type="text" placeholder="Officer Firstname Lastname" /></td>
+      </tr>
+      <tr>
+        <td class="label">OFFENSE DATE</td>
+        <td><input data-save="offense_date" type="text" placeholder="January 1, 2025" /></td>
+        <td class="label">SUSPECT NAME</td>
+        <td><input data-save="suspect_name" type="text" placeholder="Suspect's Firstname Lastname" /></td>
+      </tr>
+    </table>
+
+    <div class="section-card">
+      <h3>Crimes</h3>
+      <div id="crime-list" class="crime-list"></div>
+    </div>
+
+    <div class="section-card">
+      <h3>Narratives</h3>
+      <textarea data-save="narrative" placeholder="Narratives should be here, describe how the events started in details and sequentially."></textarea>
+    </div>
+
+    <div class="section-card">
+      <h3>Evidence / Exhibits</h3>
+      <div id="evidence-list" class="evidence-list"></div>
+    </div>
+
+    <div class="section-card">
+      <h3>Service Authorization</h3>
+      <div class="service-grid">
+        <label class="check-line"><input data-save-check="felony_checked" type="checkbox"> <span><b>Felony:</b> This service requires assistance from the Metropolitan Division or, if unavailable, authorization from the Metropolitan Command must be obtained prior to proceeding.</span></label>
+        <label class="check-line"><input data-save-check="misdemeanor_checked" type="checkbox"> <span><b>Misdemeanor:</b> Patrol Officers or Detectives are authorized to execute this warrant independently at any time, day or night.</span></label>
+      </div>
+    </div>
+
+    <table>
+      <tr>
+        <td class="label" colspan="2">PERSON TO BE ARRESTED</td>
+      </tr>
+      <tr>
+        <td class="label" style="width:25%">MUGSHOT IMAGE</td>
+        <td><input data-save="mugshot_url" type="url" placeholder="https://i.imgur.com/FlOqRSh.jpeg" oninput="updateSinglePreview(this, 'mugshot-preview')" /></td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <div id="mugshot-preview" class="preview mugshot-preview"><div class="placeholder">Preview mugshot akan muncul di sini</div></div>
+        </td>
+      </tr>
+    </table>
+
+    <table>
+      <tr>
+        <td class="label" style="width:25%">NAME</td>
+        <td style="width:25%"><input data-save="person_name" type="text" placeholder="Firstname Lastname" /></td>
+        <td class="label" style="width:25%">AKA'S</td>
+        <td style="width:25%"><input data-save="aka" type="text" placeholder="Moniker/Alias" /></td>
+      </tr>
+      <tr>
+        <td class="label">RESIDENCE ADDRESS</td>
+        <td><input data-save="address" type="text" placeholder="Residence address" /></td>
+        <td class="label">SEX</td>
+        <td><input data-save="sex" type="text" placeholder="Male/Female" /></td>
+      </tr>
+      <tr>
+        <td class="label">RACE</td>
+        <td><input data-save="race" type="text" placeholder="Caucasian/African-American/Hispanic/Asian" /></td>
+        <td class="label">SCARS, MARKS, TATTOOS</td>
+        <td><input data-save="marks" type="text" placeholder="Describe here" /></td>
+      </tr>
+    </table>
+
+    <table>
+      <tr>
+        <td class="label" style="width:25%">DATE AND TIME WARRANT ISSUED</td>
+        <td style="width:25%"><input data-save="issued_datetime" type="text" placeholder="DD/MM/YYYY" /></td>
+        <td class="label" style="width:15%">SIGNATURE</td>
+        <td style="width:35%"><input data-save="authorized_by" type="text" placeholder="RANK FIRSTNAME LASTNAME, ASSIGNMENT" /></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="output-wrap">
+    <h3>Output BBCode</h3>
+    <textarea id="bbcode-output" class="output-box" readonly placeholder="Hasil BBCode akan muncul di sini..."></textarea>
+  </div>
+
+  <div class="footer-note">© 2026 LSPD Built by (( RaySan ))</div>
+
+  <template id="crime-template">
+    <div class="evidence-card crime-item">
+      <input type="text" class="crime-text" placeholder="(4) B. Possession of Illegal Firearms" />
+    </div>
+  </template>
+
+  <template id="evidence-template">
+    <div class="evidence-card evidence-item">
+      <div class="two-col">
+        <input type="text" class="evidence-title" placeholder="Exhibit 1: Brief explanation of the attached evidence" />
+        <input type="url" class="evidence-url" placeholder="image link here" oninput="updateEvidencePreview(this)" />
+      </div>
+      <div class="preview"><div class="placeholder">Preview evidence akan muncul di sini</div></div>
+    </div>
+  </template>
+
+  <script>
+    const STORAGE_KEY = 'lspd_arrest_warrant_generator_v2';
+
+    function bbEscape(str = '') {
+      return String(str).replace(/\[/g, '&#91;').replace(/\]/g, '&#93;').trim();
+    }
+
+    function addCrime(data = {}) {
+      const tpl = document.getElementById('crime-template');
+      const clone = tpl.content.cloneNode(true);
+      clone.querySelector('.crime-text').value = data.text || '';
+      document.getElementById('crime-list').appendChild(clone);
+    }
+
+    function removeCrime() {
+      const list = document.getElementById('crime-list');
+      if (list.children.length > 1) {
+        list.removeChild(list.lastElementChild);
+        generateBBCode();
+      }
+    }
+
+    function addEvidence(data = {}) {
+      const tpl = document.getElementById('evidence-template');
+      const clone = tpl.content.cloneNode(true);
+      const item = clone.querySelector('.evidence-item');
+      const title = item.querySelector('.evidence-title');
+      const url = item.querySelector('.evidence-url');
+      title.value = data.title || '';
+      url.value = data.url || '';
+      document.getElementById('evidence-list').appendChild(item);
+      if (data.url) updateEvidencePreview(url);
+    }
+
+    function removeEvidence() {
+      const list = document.getElementById('evidence-list');
+      if (list.children.length > 1) {
+        list.removeChild(list.lastElementChild);
+        generateBBCode();
+      }
+    }
+
+    function updateSinglePreview(input, previewId) {
+      const preview = document.getElementById(previewId);
+      const url = input.value.trim();
+      if (!url) {
+        preview.innerHTML = '<div class="placeholder">Preview mugshot akan muncul di sini</div>';
+        generateBBCode();
+        return;
+      }
+      preview.innerHTML = `<img src="${escapeHtmlAttr(url)}" alt="Preview" onerror="this.parentElement.innerHTML='<div class=\'placeholder\'>Gagal memuat gambar. Cek link gambar.</div>'">`;
+      generateBBCode();
+    }
+
+    function updateEvidencePreview(input) {
+      const preview = input.closest('.evidence-item').querySelector('.preview');
+      const url = input.value.trim();
+      if (!url) {
+        preview.innerHTML = '<div class="placeholder">Preview evidence akan muncul di sini</div>';
+        generateBBCode();
+        return;
+      }
+      preview.innerHTML = `<img src="${escapeHtmlAttr(url)}" alt="Evidence Preview" onerror="this.parentElement.innerHTML='<div class=\'placeholder\'>Gagal memuat gambar. Cek link gambar.</div>'">`;
+      generateBBCode();
+    }
+
+    function escapeHtmlAttr(str) {
+      return str.replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+    }
+
+    function gatherData() {
+      const data = {};
+      document.querySelectorAll('[data-save]').forEach(el => data[el.dataset.save] = el.value);
+      document.querySelectorAll('[data-save-check]').forEach(el => data[el.dataset.saveCheck] = el.checked);
+
+      data.crimes = Array.from(document.querySelectorAll('.crime-item')).map(item => ({
+        text: item.querySelector('.crime-text')?.value || ''
+      }));
+
+      data.evidence = Array.from(document.querySelectorAll('.evidence-item')).map(item => ({
+        title: item.querySelector('.evidence-title')?.value || '',
+        url: item.querySelector('.evidence-url')?.value || ''
+      }));
+
+      return data;
+    }
+
+    function generateBBCode() {
+      const data = gatherData();
+      const crimes = (data.crimes.length ? data.crimes : [{ text: '(4) B. Possession of Illegal Firearms' }])
+        .filter(item => item.text)
+        .map(item => `[*] ${bbEscape(item.text)}`)
+        .join('\n');
+
+      const exhibits = (data.evidence.length ? data.evidence : [])
+        .filter(item => item.title || item.url)
+        .map(item => `[altspoiler=${bbEscape(item.title || 'Exhibit: Brief explanation of the attached evidence')}] [img]${bbEscape(item.url || 'image link here')}[/img] [/altspoiler]`)
+        .join('\n');
+
+      const felonyCb = data.felony_checked ? '[cbc]' : '[cb]';
+      const misdemeanorCb = data.misdemeanor_checked ? '[cbc]' : '[cb]';
+
+      const bbcode = `[block=transparent,1,black,10,10,10]\n ‏‏‎ \n[float=left][img]https://i.ibb.co.com/cyK9Rmd/Empty-150px.png[/img][/float]\n[float=right][fimg=125,125]https://i.ibb.co.com/SBLnD01/Great-Seal.png[/fimg][/float]\n\n[center]\n[size=150] [b]PROBABLE CAUSE ARREST WARRANT[/b] [/size]\n\n[size=125] COUNTY OF LOS SANTOS\nSTATE OF SAN ANDREAS [/size]\n[/center] [space]\n ‏‏‎ \n\n[float=right]\nWarrant No. ${bbEscape(data.warrant_no || '#001')}\n[/float]\n\nTHE PEOPLE OF THE STATE OF SAN ANDREAS,\nTO ANY PEACE OFFICER IN THE COUNTY OF LOS SANTOS\n ‏‏‎ \nComplaint, on oath, having been made this date before me by [b]${bbEscape(data.officer_name || 'Officer Firstname Lastname')}[/b]\n\nI find that there is probable cause to believe that the crime of:\n[list]\n${crimes || '[*] (4) B. Possession of Illegal Firearms'}\n[/list]\n\nwas committed on or about [b]${bbEscape(data.offense_date || 'January 1, 2025')}[/b], by [b]${bbEscape(data.suspect_name || "Suspect's Firstname Lastname")}[/b]\n\n[table=100,1,90]\n\n[tr]\n[td] [b]Narratives[/b]\n\n[tr]\n[td] ${bbEscape(data.narrative || 'Narratives should be here, describe how the events started in details and sequentially.')}\n\n[tr]\n[td] ${exhibits || '[altspoiler=Exhibit 1: Brief explanation of the attached evidence] [img]image link here[/img] [/altspoiler]'}\n\n[/table]\n\nWHEREFORE, you are commanded forthwith to arrest and bring said person before any magistrate in Los Santos County, or in case of the judge\'s absence or inability to act, before the nearest and most accessible police station in this county.\n ‏‏‎ \n[b]Service authorization[/b]\n${felonyCb} [b]Felony:[/b] This service requires assistance from the Metropolitan Division or, if unavailable, authorization from the Metropolitan Command must be obtained prior to proceeding.\n${misdemeanorCb} [b]Misdemeanor:[/b] Patrol Officers or Detectives are authorized to execute this warrant independently at any time, day or night.\n ‏‏‎ \n[hr]\n ‏‏‎ \n[b]PERSON TO BE ARRESTED[/b]\n\n[img-resize=150]${bbEscape(data.mugshot_url || 'https://i.imgur.com/FlOqRSh.jpeg')}[/img-resize]\n\n[table=100,1,90]\n\n[tr]\n[td] NAME:\n${bbEscape(data.person_name || 'Firstname Lastname')}\n\n[td] AKA\'s:\n${bbEscape(data.aka || 'Moniker/Alias')}\n\n[tr]\n[td] RESIDENCE ADDRESS:\n${bbEscape(data.address || 'Residence address')}\n\n[td] SEX:\n${bbEscape(data.sex || 'Male/Female')}\n\n[tr]\n[td] RACE:\n${bbEscape(data.race || 'Caucasian/African-American/Hispanic/Asian')}\n\n[td] SCARS, MARKS, TATTOOS:\n${bbEscape(data.marks || 'Describe here')}\n\n[/table]\n ‏‏‎ \n[hr]\n ‏‏‎ \n[table=100,1,90]\n\n[tr]\n[td] ${bbEscape(data.issued_datetime || 'DD/MM/YYYY')}\n[b]DATE AND TIME WARRANT ISSUED[/b]\n\n[td] Signature here\n[b]AUTHORIZED BY: ${bbEscape(data.authorized_by || 'RANK FIRSTNAME LASTNAME, ASSIGNMENT')}[/b]\n\n[/table]\n ‏‏‎ \n[/block]`;
+
+      document.getElementById('bbcode-output').value = bbcode;
+      return bbcode;
+    }
+
+    function saveData() {
+      const payload = gatherData();
+      payload.bbcode = generateBBCode();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      alert('Data berhasil disimpan dan BBCode berhasil dibuat.');
+    }
+
+    function copyBBCode() {
+      const output = document.getElementById('bbcode-output');
+      if (!output.value.trim()) generateBBCode();
+      output.select();
+      output.setSelectionRange(0, 999999);
+      document.execCommand('copy');
+      alert('BBCode berhasil disalin.');
+    }
+
+    function resetFormData() {
+      if (!confirm('Yakin ingin reset semua isi form?')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      initializeDefaults();
+      document.getElementById('bbcode-output').value = '';
+    }
+
+    function populateData(data) {
+      document.querySelectorAll('[data-save]').forEach(el => {
+        el.value = data[el.dataset.save] || '';
+      });
+      document.querySelectorAll('[data-save-check]').forEach(el => {
+        el.checked = !!data[el.dataset.saveCheck];
+      });
+
+      document.getElementById('crime-list').innerHTML = '';
+      (data.crimes?.length ? data.crimes : [{ text: '(4) B. Possession of Illegal Firearms' }, { text: '(8) M. Harbouring Criminals' }]).forEach(addCrime);
+
+      document.getElementById('evidence-list').innerHTML = '';
+      (data.evidence?.length ? data.evidence : [
+        { title: 'Exhibit 1: Brief explanation of the attached evidence', url: '' },
+        { title: 'Exhibit 2: Brief explanation of the attached evidence', url: '' }
+      ]).forEach(addEvidence);
+
+      if (data.mugshot_url) {
+        const mugshotInput = document.querySelector('[data-save="mugshot_url"]');
+        if (mugshotInput) updateSinglePreview(mugshotInput, 'mugshot-preview');
+      } else {
+        document.getElementById('mugshot-preview').innerHTML = '<div class="placeholder">Preview mugshot akan muncul di sini</div>';
+      }
+
+      generateBBCode();
+    }
+
+    function initializeDefaults() {
+      populateData({
+        warrant_no: '#001',
+        officer_name: '',
+        offense_date: '',
+        suspect_name: '',
+        narrative: '',
+        felony_checked: false,
+        misdemeanor_checked: false,
+        mugshot_url: 'https://i.imgur.com/FlOqRSh.jpeg',
+        person_name: '',
+        aka: '',
+        address: '',
+        sex: '',
+        race: '',
+        marks: '',
+        issued_datetime: '',
+        authorized_by: '',
+        crimes: [
+          { text: '(4) B. Possession of Illegal Firearms' },
+          { text: '(8) M. Harbouring Criminals' }
+        ],
+        evidence: [
+          { title: 'Exhibit 1: Brief explanation of the attached evidence', url: '' },
+          { title: 'Exhibit 2: Brief explanation of the attached evidence', url: '' }
+        ]
+      });
+    }
+
+    document.addEventListener('input', (e) => {
+      if (e.target.matches('input, textarea, select')) {
+        generateBBCode();
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        try {
+          const data = JSON.parse(raw);
+          populateData(data);
+          document.getElementById('bbcode-output').value = data.bbcode || generateBBCode();
+        } catch {
+          initializeDefaults();
+        }
+      } else {
+        initializeDefaults();
+      }
+    });
+  </script>
+</body>
+</html>
