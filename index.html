@@ -119,8 +119,8 @@ body {
             <p>Create and manage arrest reports.</p>
         </div>
 
-        <div class="card">
-            <div class="icon">📝</div>
+        <div class="card" onclick="goDaily()">
+            <div class="icon">📋</div>
             <h3>Daily Field Activity Report</h3>
             <p>Record daily field activities.</p>
         </div>
@@ -141,7 +141,8 @@ function goPenal() {
 function goArrest() {
     window.location.href = "arrest_report.html";
 }
-</script>
 
-</body>
-</html>
+function goDaily() {
+    window.location.href = "daily_report.html";
+}
+</script>
