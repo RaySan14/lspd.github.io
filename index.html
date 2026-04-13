@@ -1,148 +1,646 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>LSPD Homepage</title>
-
 <style>
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-1: #020617;
+  --bg-2: #0f172a;
+  --panel: rgba(15, 23, 42, 0.82);
+  --panel-strong: rgba(2, 6, 23, 0.92);
+  --border: rgba(148, 163, 184, 0.16);
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --primary: #3b82f6;
+  --primary-soft: rgba(59, 130, 246, 0.14);
+  --success: #22c55e;
+  --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
 body {
-    margin: 0;
-    font-family: "Segoe UI", sans-serif;
-    background: #0f172a;
-    color: white;
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top, rgba(59, 130, 246, 0.18), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(15, 118, 110, 0.08), transparent 24%),
+    linear-gradient(180deg, var(--bg-1), var(--bg-2));
+  min-height: 100vh;
 }
 
-.container {
-    max-width: 1000px;
-    margin: auto;
-    padding: 40px 20px;
+.wrapper {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 36px 20px 28px;
 }
 
-.header {
-    background: #020617;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 40px;
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(2, 6, 23, 0.62);
+  backdrop-filter: blur(12px);
 }
 
-.header h1 {
-    margin: 0;
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.header p {
-    color: #94a3b8;
-    margin-top: 5px;
+.brand-badge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  border: 1px solid rgba(59, 130, 246, 0.24);
+  color: #93c5fd;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
 }
 
-.menu-title {
-    font-size: 28px;
-    font-weight: bold;
+.brand h1 {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: 0.02em;
 }
 
-.menu-desc {
-    color: #94a3b8;
-    margin-bottom: 20px;
+.brand p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
 }
 
-.grid {
-    display: grid;
-    gap: 20px;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(34, 197, 94, 0.22);
+  background: rgba(34, 197, 94, 0.08);
+  color: #bbf7d0;
+  font-size: 14px;
+  font-weight: 600;
 }
 
-.card {
-    background: #020617;
-    border: 1px solid rgba(255,255,255,0.1);
-    padding: 20px;
-    border-radius: 16px;
-    cursor: pointer;
-    transition: 0.2s;
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 16px rgba(34, 197, 94, 0.7);
 }
 
-.card:hover {
-    background: #1e293b;
-    border-color: #3b82f6;
+.hero {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 22px;
+  margin-bottom: 24px;
 }
 
-.icon {
-    font-size: 30px;
-    margin-bottom: 10px;
-    color: #3b82f6;
+.hero-main,
+.hero-side,
+.panel,
+.menu-card,
+.stat-card {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow);
 }
 
-.card h3 {
-    margin: 0;
+.hero-main {
+  border-radius: 28px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
 }
 
-.card p {
-    margin-top: 8px;
-    color: #94a3b8;
-    font-size: 14px;
+.hero-main::before {
+  content: "";
+  position: absolute;
+  top: -80px;
+  right: -60px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59,130,246,0.24), transparent 70%);
+}
+
+.hero-main h2 {
+  margin: 14px 0 10px;
+  font-size: 44px;
+  line-height: 1.08;
+  max-width: 680px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-main p {
+  margin: 0;
+  max-width: 720px;
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 15px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-label {
+  display: inline-block;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.05);
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+  position: relative;
+  z-index: 1;
+}
+
+.btn {
+  padding: 12px 18px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(59,130,246,0.5);
+}
+
+.btn-primary {
+  background: linear-gradient(180deg, #2563eb, #1d4ed8);
+  border-color: rgba(59,130,246,0.4);
+}
+
+.hero-side {
+  border-radius: 28px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.side-title {
+  font-size: 13px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 10px;
+}
+
+.side-box {
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.side-box h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+.side-list {
+  display: grid;
+  gap: 10px;
+}
+
+.side-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+.side-item span {
+  color: var(--muted);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  border-radius: 22px;
+  padding: 20px;
+}
+
+.stat-card h3 {
+  margin: 0;
+  font-size: 34px;
+  color: #93c5fd;
+}
+
+.stat-card p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.section-head h3 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.section-head p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+
+.section-head .hint {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.menu-card {
+  border-radius: 24px;
+  padding: 22px;
+  cursor: pointer;
+  transition: 0.22s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-card::after {
+  content: "";
+  position: absolute;
+  right: -24px;
+  top: -24px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59,130,246,0.16), transparent 72%);
+}
+
+.menu-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(59,130,246,0.45);
+  background: rgba(30, 41, 59, 0.92);
+}
+
+.menu-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.menu-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  background: var(--primary-soft);
+  border: 1px solid rgba(59,130,246,0.22);
+}
+
+.menu-tag {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.05);
+  color: #bfdbfe;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.menu-card h4 {
+  position: relative;
+  z-index: 1;
+  margin: 18px 0 8px;
+  font-size: 22px;
+}
+
+.menu-card p {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.menu-link {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  margin-top: 18px;
+  color: #93c5fd;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.bottom-grid {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.panel {
+  border-radius: 24px;
+  padding: 22px;
+}
+
+.panel h4 {
+  margin: 0 0 14px;
+  font-size: 20px;
+}
+
+.list {
+  display: grid;
+  gap: 12px;
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+.list-item span {
+  color: var(--muted);
+}
+
+.notice {
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(59,130,246,0.08);
+  border: 1px solid rgba(59,130,246,0.18);
+  color: #cbd5e1;
+  line-height: 1.75;
+  font-size: 14px;
 }
 
 .footer {
-    margin-top: 50px;
-    text-align: center;
-    font-size: 14px;
-    color: #64748b;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    padding-top: 20px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(148,163,184,0.12);
+  text-align: center;
+  color: #64748b;
+  font-size: 14px;
+}
+
+@media (max-width: 1100px) {
+  .menu-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 980px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bottom-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .topbar,
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .stats,
+  .menu-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-main h2 {
+    font-size: 34px;
+  }
 }
 </style>
 </head>
-
 <body>
+<div class="wrapper">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-badge">Internal Department System</div>
+      <h1>LSPD Homepage</h1>
+      <p>Los Santos Police Department Internal Portal</p>
+    </div>
+    <div class="status-pill"><span class="status-dot"></span> System Online</div>
+  </div>
 
-<div class="container">
-
-    <div class="header">
-        <h1>LSPD Homepage</h1>
-        <p>Los Santos Police Department Internal Portal</p>
+  <section class="hero">
+    <div class="hero-main">
+      <div class="hero-label">Secure Access Gateway</div>
+      <h2>Centralized reporting and legal reference for daily LSPD operations.</h2>
+      <p>
+        Access the Penal Code database, create Arrest Reports, complete Daily Field Activity Reports, and manage Arrest Warrants from one internal portal designed for faster workflow and cleaner departmental reporting.
+      </p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="goPenal()">Open Penal Code</button>
+        <button class="btn" onclick="goArrest()">New Arrest Report</button>
+      </div>
     </div>
 
-    <div class="menu-title">Main Menu</div>
-    <div class="menu-desc">Select a module to continue.</div>
-
-    <div class="grid">
-
-        <div class="card" onclick="goPenal()">
-            <div class="icon">⚖️</div>
-            <h3>Penal Code</h3>
-            <p>View legal codes and regulations.</p>
+    <div class="hero-side">
+      <div>
+        <div class="side-title">Operational Snapshot</div>
+        <div class="side-box">
+          <h3>Command Status</h3>
+          <div class="side-list">
+            <div class="side-item"><div>Portal Status</div><span>Online</span></div>
+            <div class="side-item"><div>Access Classification</div><span>Internal Use</span></div>
+            <div class="side-item"><div>Report Flow</div><span>Available</span></div>
+          </div>
         </div>
-
-        <div class="card" onclick="goArrest()">
-            <div class="icon">📄</div>
-            <h3>Arrest Report</h3>
-            <p>Create and manage arrest reports.</p>
+      </div>
+      <div class="side-box">
+        <div class="side-title">Officer Reminder</div>
+        <div style="color:#cbd5e1; line-height:1.7; font-size:14px;">
+          Complete each report carefully before submission and ensure all narratives, evidence, screenshots, and legal details match departmental standards.
         </div>
+      </div>
+    </div>
+  </section>
 
-        <div class="card" onclick="goDaily()">
-            <div class="icon">📋</div>
-            <h3>Daily Field Activity Report</h3>
-            <p>Record daily field activities.</p>
-        </div>
+  <section class="stats">
+    <div class="stat-card">
+      <h3>04</h3>
+      <p>Available Modules</p>
+    </div>
+    <div class="stat-card">
+      <h3>24/7</h3>
+      <p>System Access</p>
+    </div>
+    <div class="stat-card">
+      <h3>Secure</h3>
+      <p>Portal Status</p>
+    </div>
+    <div class="stat-card">
+      <h3>LSPD</h3>
+      <p>Department Network</p>
+    </div>
+  </section>
 
+  <section>
+    <div class="section-head">
+      <div>
+        <h3>Main Menu</h3>
+        <p>Select a module to continue your workflow.</p>
+      </div>
+      <div class="hint">Choose one of the systems below.</div>
     </div>
 
-    <div class="footer">
-        © Jogjagamers V Roleplay • Created by RaySan
+    <div class="menu-grid">
+      <div class="menu-card" onclick="goPenal()">
+        <div class="menu-top">
+          <div class="menu-icon">⚖️</div>
+          <div class="menu-tag">Reference</div>
+        </div>
+        <h4>Penal Code</h4>
+        <p>Open the legal charge reference used for fines, jail time assessment, and criminal classification.</p>
+        <div class="menu-link">Open module →</div>
+      </div>
+
+      <div class="menu-card" onclick="goArrest()">
+        <div class="menu-top">
+          <div class="menu-icon">📄</div>
+          <div class="menu-tag">Report</div>
+        </div>
+        <h4>Arrest Report</h4>
+        <p>Create and manage arrest documentation with evidence details, narrative fields, photos, and BBCode output.</p>
+        <div class="menu-link">Open module →</div>
+      </div>
+
+      <div class="menu-card" onclick="goDaily()">
+        <div class="menu-top">
+          <div class="menu-icon">📋</div>
+          <div class="menu-tag">Operations</div>
+        </div>
+        <h4>Daily Field Activity Report</h4>
+        <p>Record patrol activities, linked reports, screenshots, and activity logs in one structured report workflow.</p>
+        <div class="menu-link">Open module →</div>
+      </div>
+
+      <div class="menu-card" onclick="goWarrant()">
+        <div class="menu-top">
+          <div class="menu-icon">📑</div>
+          <div class="menu-tag">Legal</div>
+        </div>
+        <h4>Arrest Warrant</h4>
+        <p>Create and manage official warrant documents with suspect details, legal basis, and authorization workflow.</p>
+        <div class="menu-link">Open module →</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bottom-grid">
+    <div class="panel">
+      <h4>Quick Access Overview</h4>
+      <div class="list">
+        <div class="list-item"><div>Penal Code Access</div><span>Charge lookup and sanctions</span></div>
+        <div class="list-item"><div>Arrest Documentation</div><span>Evidence and narrative handling</span></div>
+        <div class="list-item"><div>Field Activity Tracking</div><span>Patrol and screenshot log</span></div>
+        <div class="list-item"><div>Warrant Processing</div><span>Authorization and legal issuance</span></div>
+      </div>
     </div>
 
+    <div class="panel">
+      <h4>Department Notice</h4>
+      <div class="notice">
+        This portal is intended for internal reporting workflow only. Ensure every report is completed with accurate details and that all linked documentation is ready before submission or forum posting.
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">
+    © Jogjagamers V Roleplay • Created by RaySan
+  </div>
 </div>
 
 <script>
 function goPenal() {
-    window.location.href = "penal_code.html";
+  window.location.href = "penal_code.html";
 }
 
 function goArrest() {
-    window.location.href = "arrest_report.html";
+  window.location.href = "arrest_report.html";
 }
 
 function goDaily() {
-    window.location.href = "daily_report.html";
+  window.location.href = "daily_report.html";
+}
+
+function goWarrant() {
+  window.location.href = "arrest_warrant.html";
 }
 </script>
+</body>
+</html>
